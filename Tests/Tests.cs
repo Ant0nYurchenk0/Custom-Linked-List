@@ -2,6 +2,7 @@ using List;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests
 {
@@ -14,7 +15,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            _controlCollection = new List<int> { 1, 2, 3};
+            _controlCollection = new List<int> { 1, 2, 3 };
             _controlLinkedList = new MyLinkedList<int>();
             _controlLinkedList.Add(1);
             _controlLinkedList.Add(2);
@@ -33,8 +34,16 @@ namespace Tests
             Assert.AreEqual(newList.Count, 2);
         }
         [Test]
-        public void IEnumerableCtor()
+        public void IEnumerableTCtor()
         {
+            var newList = new MyLinkedList<int>(_controlCollection);
+
+            Assert.AreEqual(_controlLinkedList, newList);
+        }
+        [Test]
+        public void IEnumerableNodeTCtor()
+        {
+            var nodeCollection = _controlCollection.Select(c => new Node<int>(c));
             var newList = new MyLinkedList<int>(_controlCollection);
 
             Assert.AreEqual(_controlLinkedList, newList);
@@ -55,13 +64,13 @@ namespace Tests
         [TestCase(2, 3)]
         public void AddAt_CorrectPosition_NewLinkedList( int position, int value)
         {
-            List<int> initialList;
+            List<Node<int>> initialList;
             if (position == 0)
-                initialList = new List<int> { 2, 3 };
+                initialList = new List<Node<int>> { new Node<int>(2), new Node<int>(3) };
             else if (position == 1)
-                initialList = new List<int> {1, 3 };
+                initialList = new List<Node<int>> { new Node<int>(1), new Node<int>(3) };
             else
-                initialList = new List<int> {1, 2 };
+                initialList = new List<Node<int>> { new Node<int>(1), new Node<int>(2) };
 
             var newLinkedList = new MyLinkedList<int>(initialList);
             
@@ -106,7 +115,7 @@ namespace Tests
 
             var popped = newList.PopFirst();
 
-            Assert.AreEqual(popped, 1);
+            Assert.AreEqual(popped, new Node<int>(1));
             Assert.AreEqual(newList, new MyLinkedList<int>(new int[] { 2, 3}));
         }
         [Test]
@@ -116,7 +125,7 @@ namespace Tests
 
             var popped = newList.PopLast();
 
-            Assert.AreEqual(popped, 3);
+            Assert.AreEqual(popped, new Node<int>(3));
             Assert.AreEqual(newList, new MyLinkedList<int>(new int[] { 1, 2}));
         }
         [Test]
@@ -147,7 +156,7 @@ namespace Tests
             var popped = newLinkedList.PopAt(position);
 
             Assert.AreEqual(newLinkedList, finalList);
-            Assert.AreEqual(popped, result);
+            Assert.AreEqual(popped, new Node<int>(result));
         }
     }
 }

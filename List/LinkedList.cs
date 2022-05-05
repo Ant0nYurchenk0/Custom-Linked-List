@@ -5,15 +5,11 @@ using System.Linq;
 
 namespace List
 {
-    public class MyLinkedList<T> :IEnumerable<T>
+    public class MyLinkedList<T> : IEnumerable<Node<T>>
     {
-        public T First { get { return _first.Value; }  }
-        public T Last { get { return _last.Value; }  }
+        public Node<T> First { get; private set; }
+        public Node<T> Last { get; private set; }
         public int Count { get { return GetCount(); } }
-
-        private Node<T> _first;
-        private Node<T> _last;
-
 
         public MyLinkedList()
         {
@@ -22,29 +18,40 @@ namespace List
 
         public MyLinkedList(IEnumerable<T> iEnumerable)
         {
-            _first = new Node<T>(iEnumerable.First());
-            var currentNode = _first;
+            First = new Node<T>(iEnumerable.First());
+            var currentNode = First;
             for(var i = 1; i < iEnumerable.Count(); i++)
             {
                 currentNode.NextNode = new Node<T>(iEnumerable.ElementAt(i));
                 currentNode = currentNode.NextNode;
             }
-            _last = currentNode;
+            Last = currentNode;
+        }
+        public MyLinkedList(IEnumerable<Node<T>> iEnumerable)
+        {
+            First = iEnumerable.First();
+            var currentNode = First;
+            for (var i = 1; i < iEnumerable.Count(); i++)
+            {
+                currentNode.NextNode = iEnumerable.ElementAt(i);
+                currentNode = currentNode.NextNode;
+            }
+            Last = currentNode;
         }
 
 
         public void Add(T Value)
         {
-            if(_first == null)
+            if(First == null)
             {
-                _first = new Node<T>(Value);
-                _last = _first;
+                First = new Node<T>(Value);
+                Last = First;
             }
             else
             {
                 var newNode = new Node<T>(Value);
-                _last.NextNode = newNode;
-                _last = newNode;
+                Last.NextNode = newNode;
+                Last = newNode;
             }
         }
 
@@ -55,22 +62,22 @@ namespace List
             var newNode = new Node<T>(value);
             if (position == 0)
             {
-                var tempNode = _first;
-                _first = newNode;
-                _first.NextNode = tempNode;
+                var tempNode = First;
+                First = newNode;
+                First.NextNode = tempNode;
                 return;
             }   
             if (position == Count)
             {
-                _last.NextNode = newNode;
-                _last = _last.NextNode;
+                Last.NextNode = newNode;
+                Last = Last.NextNode;
                 return;
             }
             var previousNode = GetElementAt(position-1);
             var nextNode = GetElementAt(position);
             newNode.NextNode = nextNode;
             previousNode.NextNode = newNode;
-            _last = GetElementAt(Count-1);
+            Last = GetElementAt(Count-1);
         }
         public void RemoveAt(int position)
         {
@@ -78,42 +85,42 @@ namespace List
                 throw new ArgumentOutOfRangeException($"Invalid position: {position}");
             if (position == 0)
             {
-                _first = _first.NextNode;
+                First = First.NextNode;
                 return;
             }
             var previousNode = GetElementAt(position - 1);
             if(position == Count)
             {
                 previousNode.NextNode = null;
-                _last = previousNode;
+                Last = previousNode;
             }
             var nextNode = GetElementAt(position+1);
             previousNode.NextNode=nextNode;
         }
-        public T PopLast()
+        public Node<T> PopLast()
         {
-            var popped = _last.Value;
+            var popped = Last;
             RemoveAt(Count - 1);
             return popped;
         }
-        public T PopFirst()
+        public Node<T> PopFirst()
         {
-            var popped = _first.Value;
+            var popped = First;
             RemoveAt(0);
             return popped;
         }
-        public T PopAt(int position)
+        public Node<T> PopAt(int position)
         {
-            var popped = GetElementAt(position).Value;
+            var popped = GetElementAt(position);
             RemoveAt(position);
             return popped;
         }
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<Node<T>> GetEnumerator()
         {
-            var currentNode = _first;
+            var currentNode = First;
             while (currentNode.NextNode != null)
             {
-                yield return currentNode.Value;
+                yield return currentNode;
                 currentNode = currentNode.NextNode;
             }
         }
@@ -127,9 +134,9 @@ namespace List
             if (position < 0 || position > Count)
                 throw new ArgumentOutOfRangeException($"Invalid position: {position}");
             if(position == 0)
-                return _first;
+                return First;
             var counter = 0;
-            var currentNode = _first;
+            var currentNode = First;
             while (counter != position)
             {
                 currentNode = currentNode.NextNode;
@@ -139,9 +146,9 @@ namespace List
         }
         int GetCount()
         {
-            if(_first == null)
+            if(First == null)
                 return 0;
-            var currentNode = _first;
+            var currentNode = First;
             var counter = 1;
             while(currentNode.NextNode != null)
             {

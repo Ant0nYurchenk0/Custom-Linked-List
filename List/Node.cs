@@ -1,13 +1,35 @@
 ﻿
+using System.Collections.Generic;
+
 namespace List
 {
-    internal class Node<T>
+    public class Node<T>
     {
-        internal T Value { get; set; }
-        internal Node<T> NextNode { get; set; }
-        internal Node(T value)
+        public T Value { get; set; }
+        public Node<T> NextNode { get; set; }
+        public Node(T value)
         {
             Value = value;
         }
+        public override int GetHashCode()
+        {
+            int hash = 23;
+            hash = hash * 31 + (Value == null ? 0 : Value.GetHashCode());
+            return hash;
+        }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as Node<T>);
+        }
+
+        public bool Equals(Node<T> other)
+        {
+            if(EqualityComparer<T>.Default.Equals(other.Value, Value))
+                return true;
+            return false;
+        }
+
+
     }
 }
