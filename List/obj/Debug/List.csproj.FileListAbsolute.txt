@@ -1,0 +1,6 @@
+C:\Users\anyur\Documents\C#\List\List\bin\Debug\List.dll
+C:\Users\anyur\Documents\C#\List\List\bin\Debug\List.pdb
+C:\Users\anyur\Documents\C#\List\List\obj\Debug\List.csproj.AssemblyReference.cache
+C:\Users\anyur\Documents\C#\List\List\obj\Debug\List.csproj.CoreCompileInputs.cache
+C:\Users\anyur\Documents\C#\List\List\obj\Debug\List.dll
+C:\Users\anyur\Documents\C#\List\List\obj\Debug\List.pdb
